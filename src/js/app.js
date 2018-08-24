@@ -38,7 +38,9 @@ App = {
   },
 
   bindEvents: function() {
-    $(document).on('click', '#register', function(){ var ad = $('#registerAddress').val(); App.handleRegister(ad);   });
+    $(document).on('click', '#register', function(){ var ad = $('#registerAddress').val(); 
+    App.handleRegister(ad); $('#registerAddress').val('');  });
+    
   },
 
   populateAddress : function(){
