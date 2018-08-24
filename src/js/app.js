@@ -40,6 +40,12 @@ App = {
   bindEvents: function() {
     $(document).on('click', '#register', function(){ var ad = $('#registerAddress').val(); 
     App.handleRegister(ad); $('#registerAddress').val('');  });
+
+    $(document).on('click', '#betButton', function(){ var amount = $('#betAmount').val(); 
+    App.handleBet(amount); $('#betAmount').val('');  });
+
+    $(document).on('click', '#declareWinner', function(){App.handleWinner();});
+
     
   },
 
@@ -72,15 +78,29 @@ App = {
     })
   },
 
+  handleBet: function(betAmount){
 
+    var betInstance;
+    App.contracts.bet.deployed().then(function(instance) {
+      betInstance = instance;
+      return betInstance.gamble(betAmount);
+    }).then( function(result){
+      if(result.receipt.status == '0x01')
+        alert(betAmount + " gambled successfully")
+      else
+        alert(betAmount + " could not be gambled due to revert")
+    }).catch( function(err){
+      alert(betAmount + " could not be gambled")
+    })
+  },
 
   handleWinner : function() {
-    var voteInstance;
-    App.contracts.vote.deployed().then(function(instance) {
-      voteInstance = instance;
-      return voteInstance.winningProposal();
+    var betInstance;
+    App.contracts.bet.deployed().then(function(instance) {
+      betInstance = instance;
+      return betInstance.declareWinner();
     }).then(function(res){
-      alert(App.names[res] + "  is the winner ! :)");
+      alert(res + "  is the winner ! :)");
     }).catch(function(err){
       console.log(err.message);
     })
